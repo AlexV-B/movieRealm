@@ -1,0 +1,29 @@
+.header {
+  position: relative;
+  width: 100vw;
+  height: 15vh;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  background-color: #141414;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
+  letter-spacing: 1px;
+  color: #e50914;
+  box-sizing: border-box;
+}
+
+
+.header h1 {
+  font-size: 2rem;
+}
+
+.leftBlock {
+  display: flex;
+  margin-left: 50vw;
+}
+
+.language {
+  width: 7vw;
+  height: 5vh;
+  margin-right: 20px;
+}

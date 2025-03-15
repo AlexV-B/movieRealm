@@ -3,5 +3,9 @@
   "references": [
     { "path": "./tsconfig.app.json" },
     { "path": "./tsconfig.node.json" }
-  ]
+  ],
+
+  "compilerOptions": {
+    "jsx": "react-jsx", // Для React 17 и выше
+  }
 }

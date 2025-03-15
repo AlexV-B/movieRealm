@@ -1,0 +1,177 @@
+.containerMovieList{
+  width: 100vw;
+  pointer-events: auto;
+}
+
+.movieList {
+    display: grid;
+    grid-template-columns: repeat(8, 200px);
+    justify-content: center;
+    place-items: center;
+    width: 100vw;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+
+  .tabs{
+    width: 100vw;
+    height: 50px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.15);
+  }
+
+  .tabs button{
+    width: 150px;
+  }
+  
+  .tabs button:hover{
+    border: 2px solid #e50914;
+  }
+
+  .movieCard {
+    position: relative;
+    margin-top: 20px;
+    overflow: hidden;
+    height: 200px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-align: center;
+    pointer-events: auto;
+
+}
+  
+  .movieCard img {
+    max-width: 200px;
+    height: 200px;
+    object-fit: cover;
+    filter: brightness(0.8);
+    transition: filter 0.3s ease;
+    pointer-events: auto;
+
+  }
+  
+  .movieCard:hover {
+    transform: scale(1.05);
+    /* box-shadow: 0 8px 16px rgba(255, 0, 0, 0.8); */
+  }
+  
+  .movieCard:hover img {
+    filter: brightness(1);
+  }
+  
+  .movieCard h3 {
+    text-align: center;
+    font-size: 1.2rem;
+  }
+  
+  .topFilmBlock {
+    position: relative;
+    width: 100vw;
+    height: 80vh;
+    display: flex;
+    background-color: #ffffff;
+    overflow: hidden; /* Ограничиваем выход элементов за границы */
+    pointer-events: auto;
+  }
+  
+  .topFilmBanner {
+    width: 100vw;
+    height: 400px; 
+    object-fit: cover; 
+    pointer-events: auto;
+  }
+
+  .topFilmBlockTrailer{
+    position: relative;
+    width: 100vw;
+    height: 80vh;
+    display: flex;
+    background-color: #ffffff;
+    overflow: hidden; /* Ограничиваем выход элементов за границы */
+    pointer-events: auto;
+    justify-content: end;
+  }
+  .topFilmTrailer{
+    width: 70vw;
+    height: 80vh;
+  }
+
+  .topFilmDetails {
+  position: absolute;
+    bottom: 30%;
+    left: 3%;
+    color: white;
+    padding: 20px;
+    max-width: 35%; /* Ограничиваем ширину */
+    pointer-events: auto;
+    z-index: 2;
+  }
+
+  .topFilmBlock img {
+    width: 100vw;
+    height: 100vh;
+    background-color: black;
+    object-fit: scale-down;
+    object-position: right;
+
+  }
+
+
+  .topFilmOverlay{
+    position: absolute;
+    top: 0;
+    left: 0px;
+    width: 50%;
+    height: 100%;
+    pointer-events:none;
+    background: linear-gradient(to right, 
+    rgba(0, 0, 0, 1) 60%,  /* 80% ширины остаётся чёрным */
+    rgba(0, 0, 0, 0.9) 70%, /* Начинает ослабевать */
+    rgba(0, 0, 0, 0.7) 80%, /* Начинает ослабевать */
+    rgba(0, 0, 0, 0.5) 85%, /* Начинает ослабевать */
+    rgba(0, 0, 0, 0.3) 90%, /* Начинает ослабевать */
+    rgba(0, 0, 0, 0) 100% );  /* Полностью исчезает у правого края */
+  z-index: 1;
+ }
+
+  
+  .topFilmDetails h2 {
+    font-size: 2rem;
+    font-stretch: extra-expanded;
+    margin: 0 0 50px 0; /* Убираем сильные отступы */
+  }
+  
+  .topFilmDetails p {
+    font-size: 1rem;
+    line-height: 2;
+    margin: 0;
+    color: #ffffff;
+  }
+  
+  .movieNumber {
+    position: absolute;
+    top: 130px;
+    left: 0px;
+    font-size: 3rem;
+    font-weight: bold;
+    color: rgba(0, 0, 0, 0.605);
+    -webkit-text-stroke: 1px rgb(255, 255, 255); /* Черная окантовка вокруг текста */
+    padding: 5px 10px;
+    border-radius: 5px;
+    z-index: 2;
+  }
+
+  @media (max-width: 768px) {
+    .movieList {
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .movieCard img {
+      height: 250px;
+    }
+  }
+  

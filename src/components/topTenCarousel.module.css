@@ -1,0 +1,82 @@
+.carouselContainer {
+  position: relative;
+  margin: auto;
+  padding: 20px;
+  background-color: black;
+  color: white;
+  overflow: hidden;
+}
+
+.movieCard {
+  position: relative;
+  text-align: center;
+  padding: 10px;
+}
+
+.rank {
+  position: absolute;
+  top: 200px;
+  left: -10px;
+  font-size: 5rem;
+  font-weight: bold;
+  color: rgba(0, 0, 0, 0.605);
+  -webkit-text-stroke: 1px rgb(255, 255, 255); /* Черная окантовка вокруг текста */
+  border-radius: 5px;
+  z-index: 2;
+}
+
+.poster {
+width: 200px;
+  height: 300px;
+  border-radius: 10px;
+  object-fit: cover;
+  transition: transform 0.3s ease-in-out;
+}
+
+.poster:hover {
+  transform: scale(1.05);
+}
+
+
+/* Стили для кастомных стрелок */
+.customArrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 5;
+  width: 40px;
+  height: 40px;
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.customArrow:hover {
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+/* Левая стрелка */
+.prev {
+  left: 10px;
+  background: url('/left-arrow.svg') no-repeat center center / contain;
+}
+
+/* Правая стрелка */
+.next {
+  right: 10px;
+  background: url('/right-arrow.svg') no-repeat center center / contain;
+}
+
+/* Убираем стрелки на мобильных устройствах */
+@media (max-width: 768px) {
+  .prev {
+    left: 5px;
+  }
+  .next {
+    right: 5px;
+  }
+}
