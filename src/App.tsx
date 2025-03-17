@@ -1,8 +1,9 @@
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import MovieDetail from "./pages/MovieDetail";
 import Home from "./pages/Home";
 import Header from "./components/Header";
 import { useState } from "react";
+
 
 const App = () => {
   const [searchResults, setSearchResults] = useState<any[]>([]);
@@ -17,13 +18,13 @@ const App = () => {
   };
 
   return (
-    <Router>
+    <>
       <Header language={language} onSearchResults={handleSearchResults}  setLanguage={setLanguage}/>
       <Routes>
       <Route path="/" element={<Home language={language} searchResults={searchResults} />} />
       <Route path="/movie/:id" element={<MovieDetail />} /> {/* Страница детальной информации о фильме */}
       </Routes>
-    </Router>
+    </>
   );
 };
 
