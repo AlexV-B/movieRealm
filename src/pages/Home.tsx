@@ -9,7 +9,7 @@ interface HomeProps {
   searchResults: any[]; // <-- Указываем тип
 }
 
-const Home: React.FC<HomeProps> = ({ language, searchResults }) => {
+const Home: React.FC<HomeProps> = ({ language, searchResults }: { language: string; searchResults: any[] }) => {
   const location = useLocation();
   const isMovieDetailPage = location.pathname.startsWith("/movie/");
   const [showWelcome, setShowWelcome] = useState(() => {

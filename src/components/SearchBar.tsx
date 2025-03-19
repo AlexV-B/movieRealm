@@ -1,15 +1,15 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import styles from './searchBar.module.css';
 
 const apiKey = '6079e93c1e108a319ce62e3f8c0a8ac0';
 
-interface SearchBarProps {
-    onSearchResults: (results: any[] | null, query: string) => void;
-}
+// interface SearchBarProps {
+//     onSearchResults: (results: any[] | null, query: string) => void;
+// }
 
-const SearchBar = ({ onSearchResults }: SearchBarProps) => {
-    const [query, setQuery] = useState('');
+const SearchBar = ({ onSearchResults }: { onSearchResults: (results: any[] | null, query: string) => void }) => {
+    const [query, setQuery] = useState("");
 
     const handleSearch = async () => {
         if (!query.trim()) return;
@@ -22,6 +22,12 @@ const SearchBar = ({ onSearchResults }: SearchBarProps) => {
             console.error('Ошибка поиска:', error);
         }
     };
+
+    useEffect(() => {
+        return () => {
+          setQuery(""); // Очистка поля при размонтировании
+        };
+      }, []);
 
     const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {

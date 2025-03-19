@@ -5,19 +5,38 @@
   background-color: black;
   color: white;
   overflow: hidden;
+  -webkit-overflow-scrolling: touch;
 }
 
+.carouselContainer h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  margin-left: 50px;
+}
 .movieCard {
   position: relative;
   text-align: center;
   padding: 10px;
+  cursor: grab; /* Добавляем курсор для перетаскивания */
+  transition: transform 0.4s ease-in-out, opacity 0.4s ease-in-out;
+
+}
+
+.movieCard:active {
+  cursor: grabbing; /* Меняем курсор при активном перетаскивании */
+}
+
+.slick-center .movieCard {
+  transform: scale(1.1);
+  opacity: 1;
 }
 
 .rank {
   position: absolute;
   top: 200px;
-  left: -10px;
-  font-size: 5rem;
+  left: 25px;
+  font-size: 6rem;
   font-weight: bold;
   color: rgba(0, 0, 0, 0.605);
   -webkit-text-stroke: 1px rgb(255, 255, 255); /* Черная окантовка вокруг текста */
@@ -26,7 +45,9 @@
 }
 
 .poster {
-width: 200px;
+  margin-left: 45px;
+
+  width: 200px;
   height: 300px;
   border-radius: 10px;
   object-fit: cover;
@@ -41,34 +62,34 @@ width: 200px;
 /* Стили для кастомных стрелок */
 .customArrow {
   position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 5;
   width: 40px;
   height: 40px;
   background-color: rgba(255, 255, 255, 0.5);
   border-radius: 50%;
   cursor: pointer;
-  transition: background-color 0.3s ease-in-out;
+  transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 10;
 }
 
 .customArrow:hover {
   background-color: rgba(255, 255, 255, 0.8);
+  transform: scale(1.2) translateY(-50%);
+  opacity: 0.8;
 }
 
 /* Левая стрелка */
 .prev {
   left: 10px;
-  background: url('/left-arrow.svg') no-repeat center center / contain;
+  /* background: url('/left-arrow.svg') no-repeat center center / contain; */
 }
 
 /* Правая стрелка */
 .next {
   right: 10px;
-  background: url('/right-arrow.svg') no-repeat center center / contain;
+  /* background: url('/right-arrow.svg') no-repeat center center / contain; */
 }
 
 /* Убираем стрелки на мобильных устройствах */

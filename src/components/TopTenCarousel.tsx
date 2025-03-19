@@ -19,96 +19,115 @@ const CustomNextArrow = (props: any) => {
   return <div className={`${className} ${styles.customArrow} ${styles.next}`} onClick={onClick} />;
 };
 
-const TopTenCarousel = ({ language = "en" }) => {
+const TopTenCarousel = ({ language }: { language: string }) => {
   const [topMovies, setTopMovies] = useState<any[]>([]);
   const sliderRef = useRef<Slider | null>(null);
   const isDragging = useRef(false);
-  const startX = useRef(0);
-  const velocity = useRef(0);
 
   useEffect(() => {
     const fetchTopMovies = async () => {
       try {
         const response = await axios.get(
-          `https://api.themoviedb.org/3/trending/movie/day?api_key=${apiKey}&language=${language}`
+          `https://api.themoviedb.org/3/trending/movie/day?api_key=${apiKey}&language=${language}&nocache=${Math.random()}`
         );
-        setTopMovies(response.data.results.slice(0, 10));
+        const movies = response.data.results.slice(0, 10);
+
+        setTopMovies(movies); // Обновляем список фильмов
+
+        console.log("Загруженные фильмы:", response.data.results); // Проверяем, меняется ли язык
       } catch (error) {
         console.error("Ошибка загрузки ТОП-10 фильмов:", error);
       }
     };
 
     fetchTopMovies();
-  }, [language]);
+  }, [language]); // Срабатывает при изменении языка
 
   const settings = {
     dots: false,
     infinite: true,
-    speed: 500,
+    speed: 800,
     slidesToShow: 5,
     slidesToScroll: 1,
     arrows: true,
     prevArrow: <CustomPrevArrow />,
     nextArrow: <CustomNextArrow />,
-    draggable: false, // Отключаем встроенное перетаскивание
-    swipe: false, // Отключаем стандартный свайп
-    touchThreshold: 20, // Настраиваем чувствительность свайпа
+    draggable: true, // Включаем встроенное перетаскивание
+    swipe: true, // Включаем стандартный свайп
+    touchThreshold: 52, // Настраиваем чувствительность свайпа
+    centerMode: false, // Дает эффект центрирования
+    centerPadding: "10px", // Оставляет место по краям
+    cssEase: "ease-in-out", // Более плавная анимация
+    touchMove: true,
+    swipeToSlide: false,
     responsive: [
       { breakpoint: 1024, settings: { slidesToShow: 3 } },
       { breakpoint: 768, settings: { slidesToShow: 2 } },
       { breakpoint: 480, settings: { slidesToShow: 1 } },
     ],
+    beforeChange: () => {
+      isDragging.current = true;
+    },
+    afterChange: () => {
+      setTimeout(() => {
+        isDragging.current = false;
+      }, 50);
+    },
   };
 
-  // 🛠 Обрабатываем пользовательский свайп с эффектом "барабана"
-  const handleTouchStart = (e: React.TouchEvent | React.MouseEvent) => {
-    isDragging.current = true;
-    startX.current = "touches" in e ? e.touches[0].clientX : e.clientX;
-    velocity.current = 0;
-  };
-
-  const handleTouchMove = (e: React.TouchEvent | React.MouseEvent) => {
-    if (!isDragging.current) return;
-
-    const currentX = "touches" in e ? e.touches[0].clientX : e.clientX;
-    const deltaX = startX.current - currentX;
-    velocity.current = deltaX; // Запоминаем скорость движения
-  };
-
-  const handleTouchEnd = () => {
-    isDragging.current = false;
-
-    // Определяем направление и скорость инерции
-    const inertiaFactor = Math.min(Math.abs(velocity.current) / 50, 5); // Ограничиваем скорость
-    const direction = velocity.current > 0 ? "next" : "prev";
-
+  useEffect(() => {
     if (sliderRef.current) {
-      for (let i = 0; i < inertiaFactor; i++) {
-        setTimeout(() => {
-          direction === "next" ? sliderRef.current!.slickNext() : sliderRef.current!.slickPrev();
-        }, i * 100);
-      }
+      setTimeout(() => {
+        sliderRef.current?.slickGoTo(0); // Переключаемся на первый слайд
+        sliderRef.current?.slickPause(); // Сбрасываем autoplay
+      }, 300);
     }
-  };
+  }, [topMovies]); // Обновление при смене списка фильмов
 
+  useEffect(() => {
+    const handleWheel = (event: WheelEvent) => {
+      if (!sliderRef.current) return;
+  
+      if (event.deltaX > 0) {
+        sliderRef.current.slickNext(); // Прокрутка вправо
+      } else if (event.deltaX < 0) {
+        sliderRef.current.slickPrev(); // Прокрутка влево
+      }
+    };
+  
+    const sliderElement = sliderRef.current?.innerSlider?.list;
+    if (sliderElement) {
+      sliderElement.addEventListener("wheel", handleWheel);
+    }
+  
+    return () => {
+      if (sliderElement) {
+        sliderElement.removeEventListener("wheel", handleWheel);
+      }
+    };
+  }, []);
+  
+  
   return (
     <div
+      key={language} // Уникальный ключ для принудительного обновления карусели
       className={styles.carouselContainer}
-      onMouseDown={handleTouchStart}
-      onMouseMove={handleTouchMove}
-      onMouseUp={handleTouchEnd}
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
     >
       <h2>Top 10 this week</h2>
-      <Slider ref={sliderRef} {...settings}>
+      <Slider key={language} ref={sliderRef} {...settings}>
         {topMovies.map((movie, index) => (
           <div key={movie.id} className={styles.movieCard}>
             <span className={styles.rank}>{index + 1}</span>
-            <Link to={`/movie/${movie.id}`} onClick={(e) => isDragging.current && e.preventDefault()}>
+            <Link
+              to={`/movie/${movie.id}`}
+              onClick={(e) => {
+                if (isDragging.current) {
+                  e.preventDefault();
+                }
+              }}
+            >
               <img
-                src={`https://image.tmdb.org/t/p/w780${movie.poster_path}`}
+                src={`https://image.tmdb.org/t/p/w780${movie.poster_path}`}  // Убедись, что ты правильно подставляешь язык
                 alt={movie.title}
                 className={styles.poster}
               />

@@ -1,8 +1,11 @@
 import { useEffect } from "react";
 import styles from "./header.module.css";
 import SearchBar from "./SearchBar";
+import { Link } from "react-router-dom";
 
-const Header = ({ onSearchResults, language, setLanguage }: { onSearchResults: (results: any[] | null, query: string) => void; language: string; 
+const Header = ({ onSearchResults, language, setLanguage }: { 
+  onSearchResults: (results: any[] | null, query: string) => void;
+  language: string; 
   setLanguage: (lang: string) => void; }) => {
 
       // Когда язык меняется, сохраняем его в localStorage
@@ -12,7 +15,9 @@ const Header = ({ onSearchResults, language, setLanguage }: { onSearchResults: (
 
   return (
     <header className={styles.header}>
-      <h1>MovieRealm</h1>
+           <Link to="/" className={styles.homeLink}>
+        <h1>MovieRealm</h1>
+      </Link>
       <div  className={styles.leftBlock}>
         <div >
           {" "}

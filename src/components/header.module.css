@@ -1,5 +1,5 @@
 .header {
-  position: relative;
+  position: fixed;
   width: 100vw;
   height: 15vh;
   display: flex;
@@ -10,10 +10,12 @@
   letter-spacing: 1px;
   color: #e50914;
   box-sizing: border-box;
+  z-index: 11;
 }
 
 
 .header h1 {
+  color: #e50914;
   font-size: 2rem;
 }
 

@@ -1,0 +1,383 @@
+.movieDetailContainer {
+    width: 100vw;
+    height: 200vh;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+.blackOverlay {
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.792);
+    width: 100vw;
+    height: 100vh;
+    box-sizing: border-box;
+}
+
+.posterImageBackground {
+    position: absolute;
+    width: 100vw;
+    height: 85vh;
+    z-index: -1;
+}
+
+.posterImageBackground img {
+    margin-top: 15vh;
+    object-fit: cover;
+    object-position: top;
+    width: 100vw;
+    height: 85vh;
+}
+
+.movieDetail {
+    position: relative;
+    margin-top: 15vh;
+    display: grid;
+    grid-template-columns: 0.7fr 0.7fr 0.7fr 1.2fr 1.2fr;
+    grid-template-rows: repeat(5, 1fr);
+    gap: 5px;
+    width: 100vw;
+    max-height: 85vh;
+    box-sizing: border-box;
+    z-index: 1;
+}
+
+.posterImage {
+    position: relative;
+    grid-column: span 2;
+    grid-row: span 5;
+    width: 100%;
+    max-height: 100%;
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    padding-right: 40px;
+    box-sizing: border-box;
+}
+
+.movieDetailContainer h1 {
+    grid-column: span 3 / span 3;
+    grid-column-start: 3;
+    display: inline-flex;
+    justify-content: start;
+    margin-top: 1.5em;
+    font-size: 3.5rem;
+    font-stretch: extra-expanded;
+    color: rgb(255, 255, 255);
+    line-height: 0.8;
+    margin-bottom: 0;
+}
+
+.movieInfo {
+    grid-column: span 3 / span 3;
+    grid-column-start: 3;
+    display: flex;
+    flex-direction: column;
+    color: rgb(255, 255, 255);
+    margin-bottom: 30px;
+}
+
+.movieDetailContainer h2 {
+    display: flex;
+    gap: 5px;
+    font-size: 1em;
+    font-weight: 200;
+}
+
+.genresAndRuntime {
+    display: flex;
+    flex-direction: row;
+    height: 40px;
+    gap: 30px;
+}
+
+.movieOverview {
+    grid-column: span 3 / span 3;
+    grid-column-start: 3;
+    grid-row-start: 2;
+    max-height: 150px;
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1em;
+    padding-right: 100px;
+    color: rgb(255, 255, 255);
+    text-overflow: ellipsis;
+}
+
+.movieOverview p {
+    margin: 0;
+}
+
+.movieReleaseDate {
+    grid-column-start: 3;
+    grid-row-start: 3;
+    place-items: center;
+    display: flex;
+    color: rgb(255, 255, 255);
+}
+
+.movieRating {
+    grid-column-start: 4;
+    grid-row-start: 3;
+    place-items: center;
+    display: flex;
+    color: rgb(255, 255, 255);
+}
+
+.buttons {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+    grid-column-start: 3;
+    grid-row-start: 4;
+}
+
+.p {
+    color: #fff;
+    font-weight: 700;
+}
+
+.buttonWatchTrailerBox {
+    display: flex;
+    place-items: center;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.buttonWatchTrailer {
+    display: flex;
+    justify-content: center;
+    place-items: center;
+    width: 40px;
+    /* Укажи нужный размер */
+    height: 40px;
+    background-color: #e50914;
+    border-radius: 50%;
+}
+
+.favoritesMovie {
+    display: flex;
+    justify-content: center;
+    place-items: center;
+    width: 40px;
+    /* Укажи нужный размер */
+    height: 40px;
+    background-color: #e50914;
+    border-radius: 50%;
+}
+
+.posterImage img {
+    position: absolute;
+    width: 70%;
+    height: 90%;
+    object-fit: cover;
+    border-radius: 20px;
+}
+
+.favoritesMovie a {
+    width: 24px;
+    height: 24px;
+    display: inline-block;
+    background-image: url('https://www.themoviedb.org/assets/2/v4/glyphicons/basic/glyphicons-basic-13-heart-white-28d2cc2d6418c5047efcfd2438bfc5d109192671263c270993c05f130cc4584e.svg');
+    background-size: cover;
+    cursor: pointer;
+}
+
+.buttonWatchTrailer a {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: inline-block;
+    background-image: url('https://www.themoviedb.org/assets/2/v4/glyphicons/basic/glyphicons-basic-175-play-806cb05551791b8dedd7f8d38fd3bd806e2d397fcfeaa00a5cc9129f0819fd07.svg');
+    background-size: cover;
+    color: #ffffff;
+    cursor: pointer;
+}
+
+
+
+/* Затемняющий фон для модального окна */
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* Контент внутри модального окна */
+.modalContent {
+    border: 0.1px solid #ffffff5f;
+    position: relative;
+    background: #000;
+    padding: 20px;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 800px;
+ margin-top: 15vh;
+    /* text-align: center; */
+}
+
+/* Видео */
+.topFilmTrailer {
+    width: 100%;
+    height: 450px;
+}
+
+/* Кнопка закрытия */
+.closeButton {
+    position: absolute;
+    top: -13px;
+    right: -20px;
+    background: none;
+    border: none;
+    color: #e50914;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+
+.movieActors {
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    height: 100vh;
+    background-color: #a3a3a3;
+    box-sizing: border-box;
+}
+
+.cast {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #000;
+    margin-left: 130px;
+}
+
+.actorsList {
+    display: flex;
+    justify-content: space-evenly;
+    padding: 0 50px;
+    margin-bottom: 10px;
+}
+
+.actorCards {
+    display: flex;
+    flex-direction: column;
+    border-radius: 20px;
+    width: 138px;
+    height: 230px;
+    padding-bottom: 20px;
+    font-size: 13px;
+    font-weight: 700;
+    text-align: center;
+    color: #000;
+    background-color: #ffffff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);  
+    transition: transform 0.3s ease, box-shadow 0.3s ease;  
+    overflow: hidden;
+}
+
+.actorCards:hover {
+    transform: scale(1.2);
+}
+
+.actorImage {
+    min-width: 138px;
+    width: 138px;
+    height: 200px;
+    display: block;
+    object-fit: cover;
+}
+
+
+.movieMedia {
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    height: 100vh;
+    background-color: #dfdede;
+    box-sizing: border-box;
+}
+
+.media {
+    display: flex;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #000;
+    margin-left: 130px;
+}
+
+.mediasList {
+    display: flex;
+    justify-content: space-evenly;
+    padding: 0 50px;
+    margin-bottom: 20px;
+}
+
+.mediaCards {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 20px;
+    width: 150px;
+    height: 230px;
+    font-size: 13px;
+    font-weight: 700;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);    
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+}
+
+.mediaCards:hover {
+    transform: translateY(-40%) scale(2);;
+}
+
+.mediaImage {
+    min-width: 150px;
+    width: 150px;
+    height: 230px;
+    display: block;
+    object-fit: cover;
+}
+
+.movieTeaser {
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    height: 100vh;
+    background-color: #dfdede;
+    box-sizing: border-box;
+    z-index: 1;
+}
+
+.teaserTitle{
+    display: flex;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #000;
+    margin-left: 140px;
+}
+
+.teaserSwiper {
+    width: 100%;
+    max-width: 90%;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .teaserCard {
+    width: 560px;
+    height: 315px;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+

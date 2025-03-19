@@ -1,18 +1,21 @@
 .containerMovieList{
   width: 100vw;
+  min-height: 100vh;
   pointer-events: auto;
 }
 
 .movieList {
     display: grid;
-    grid-template-columns: repeat(8, 200px);
+    grid-template-columns: repeat(6, 250px);
     justify-content: center;
     place-items: center;
     width: 100vw;
+    min-height: 100vh;
     background-color: rgba(0, 0, 0, 0.5);
   }
 
   .tabs{
+    margin-top: 15vh;
     width: 100vw;
     height: 50px;
     display: flex;
@@ -20,7 +23,7 @@
     align-items: center;
     background-color: rgba(0, 0, 0, 0.15);
   }
-
+  
   .tabs button{
     width: 150px;
   }
@@ -32,19 +35,20 @@
   .movieCard {
     position: relative;
     margin-top: 20px;
-    overflow: hidden;
-    height: 200px;
+    width: 200px;
+    height: 300px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     text-align: center;
     pointer-events: auto;
+    overflow: hidden;
 
 }
   
   .movieCard img {
-    max-width: 200px;
-    height: 200px;
+    width: 200px;
+    height: 300px;
     object-fit: cover;
     filter: brightness(0.8);
     transition: filter 0.3s ease;
@@ -54,7 +58,6 @@
   
   .movieCard:hover {
     transform: scale(1.05);
-    /* box-shadow: 0 8px 16px rgba(255, 0, 0, 0.8); */
   }
   
   .movieCard:hover img {
@@ -66,15 +69,6 @@
     font-size: 1.2rem;
   }
   
-  .topFilmBlock {
-    position: relative;
-    width: 100vw;
-    height: 80vh;
-    display: flex;
-    background-color: #ffffff;
-    overflow: hidden; /* Ограничиваем выход элементов за границы */
-    pointer-events: auto;
-  }
   
   .topFilmBanner {
     width: 100vw;
@@ -109,14 +103,7 @@
     z-index: 2;
   }
 
-  .topFilmBlock img {
-    width: 100vw;
-    height: 100vh;
-    background-color: black;
-    object-fit: scale-down;
-    object-position: right;
 
-  }
 
 
   .topFilmOverlay{

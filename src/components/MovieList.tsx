@@ -7,7 +7,6 @@ import GenreFilter from "./GenreFilter";
 import { debounce } from "lodash";
 import TopTenCarousel from "./TopTenCarousel";
 
-
 const apiKey = "6079e93c1e108a319ce62e3f8c0a8ac0";
 
 const categories = [
@@ -32,7 +31,7 @@ const MovieList = ({
   const { ref, inView } = useInView({ threshold: 0.2 });
   const displayedMovies = searchResults.length > 0 ? searchResults : movies;
   const [trailerKey, setTrailerKey] = useState<string | null>(null);
-const [showBanner, setShowBanner] = useState(false);
+  const [showBanner, setShowBanner] = useState(true);
   const location = useLocation();
 
   useEffect(() => {
@@ -40,26 +39,31 @@ const [showBanner, setShowBanner] = useState(false);
       window.scrollTo(0, 0);
     }, 100); // Задержка на 100 мс для корректного отображения
   }, [location.pathname]); // Выполняется при изменении пути
+
   useEffect(() => {
     setTopMovies([]);
     setMovies([]);
     setPage(1);
+    setTrailerKey(null);
+    setShowBanner(true);
   }, [category, selectedGenre, language]);
 
   useEffect(() => {
     if (topMovies.length > 0) {
       fetchTrailer(topMovies[0].id);
     }
-  }, [topMovies]);
-  
+  }, [topMovies, language]);
+
   const fetchTrailer = async (movieId: number) => {
     try {
-        setShowBanner(true)
       const response = await axios.get(
         `https://api.themoviedb.org/3/movie/${movieId}/videos?api_key=${apiKey}&language=${language}`
       );
-      const trailers = response.data.results.filter((video: any) => video.type === "Trailer" && video.site === "YouTube");
-      
+      console.log("Полученные видео:", response.data.results);
+      const trailers = response.data.results.filter(
+        (video: any) => video.type === "Trailer" && video.site === "YouTube"
+      );
+
       if (trailers.length > 0) {
         setTrailerKey(trailers[0].key);
         setShowBanner(false);
@@ -72,12 +76,14 @@ const [showBanner, setShowBanner] = useState(false);
       setShowBanner(true);
     }
   };
-  
 
   useEffect(() => {
     // Дебаунс для уменьшения частоты запросов
     const handleScroll = debounce(() => {
-      if (window.innerHeight + document.documentElement.scrollTop === document.documentElement.offsetHeight) {
+      if (
+        window.innerHeight + document.documentElement.scrollTop ===
+        document.documentElement.offsetHeight
+      ) {
         setPage((prev) => prev + 1);
       }
     }, 200);
@@ -89,52 +95,55 @@ const [showBanner, setShowBanner] = useState(false);
     };
   }, []);
 
-
   useEffect(() => {
     if (page === 1) {
-      fetchMovies(1, category, selectedGenre, language, true);
+      fetchMovies(1, category, selectedGenre, language);
     }
   }, [category, selectedGenre, language]);
 
   useEffect(() => {
     if (page > 1) {
-      fetchMovies(page, category, selectedGenre, language, false);
+      fetchMovies(page, category, selectedGenre, language);
+      console.log(language);
     }
-  }, [page]);
-
+  }, [page, language]);
 
   useEffect(() => {
-    if (inView && !loading && movies.length > 0) {
+    if (inView && !loading && movies.length > 0 && page < 500) {
       setPage((prev) => prev + 1);
     }
   }, [inView, loading]);
-
-
 
   const fetchMovies = async (
     page: number,
     category: string,
     genre: string | null,
-    language: string,
-    isFirstPage: boolean
+    language: string
   ) => {
     setLoading(true);
     const categoryData = categories.find((c) => c.id === category);
     let url = `https://api.themoviedb.org/3/${categoryData?.url}?api_key=${apiKey}&page=${page}&language=${language}`;
-  
+
     if (genre) {
       url += `&with_genres=${genre}`;
     }
-  
+
     try {
       const response = await axios.get(url);
       const newMovies = response.data.results;
-  
-      if (isFirstPage) {
+
+      if (page === 1 && topMovies.length === 0) {
         setTopMovies(newMovies.slice(0, 10)); // ТОП-10 фильмов
         setMovies(newMovies.slice(10)); // Остальные фильмы
       } else {
-        setMovies((prevMovies) => [...prevMovies, ...newMovies]);
+        setMovies((prevMovies) => {
+          // Исключаем дубли по `id`
+          const uniqueMovies = newMovies.filter(
+            (newMovie: { id: any }) =>
+              !prevMovies.some((prevMovie) => prevMovie.id === newMovie.id)
+          );
+          return [...prevMovies, ...uniqueMovies];
+        });
       }
     } catch (error) {
       console.error("Ошибка загрузки фильмов:", error);
@@ -142,11 +151,11 @@ const [showBanner, setShowBanner] = useState(false);
       setLoading(false);
     }
   };
-  
+
   return (
     <div className={styles.containerMovieList}>
       <div className={styles.tabs}>
-          <GenreFilter onSelectGenre={setSelectedGenre} />
+        <GenreFilter onSelectGenre={setSelectedGenre} />
         {categories.map((cat) => (
           <button
             key={cat.id}
@@ -157,38 +166,37 @@ const [showBanner, setShowBanner] = useState(false);
           </button>
         ))}
       </div>
-  
+
       {topMovies.length > 0 && (
-  <div className={styles.topFilmBlockTrailer}>
-    <Link to={`/movie/${topMovies[0].id}`}>
-    {showBanner ? (
-        <img
-          className={styles.topFilmBanner}
-          src={`https://image.tmdb.org/t/p/w1280${topMovies[0].backdrop_path || topMovies[0].poster_path}`}
-          alt={topMovies[0].title}
-        />
-      ) : (
-        <iframe
-          className={styles.topFilmTrailer}
-          src={`https://www.youtube.com/embed/${trailerKey}?autoplay=1&mute=1&loop=1&playlist=${trailerKey}`}
-          title="Movie Trailer"
-          frameBorder="0"
-          allow="autoplay; encrypted-media"
-          allowFullScreen
-        ></iframe>
+        <div className={styles.topFilmBlockTrailer}>
+          <Link to={`/movie/${topMovies[0].id}`}>
+            {showBanner ? (
+              <img
+                className={styles.topFilmBanner}
+                src={`https://image.tmdb.org/t/p/w1280${topMovies[0].backdrop_path || topMovies[0].poster_path}`}
+                alt={topMovies[0].title}
+              />
+            ) : (
+              <iframe
+                className={styles.topFilmTrailer}
+                src={`https://www.youtube.com/embed/${trailerKey}?autoplay=1&mute=1&loop=1&playlist=${trailerKey}`}
+                title="Movie Trailer"
+                frameBorder="0"
+                allow="autoplay; encrypted-media"
+                allowFullScreen
+              ></iframe>
+            )}
+            <div className={styles.topFilmOverlay}></div>
+            <div className={styles.topFilmDetails}>
+              <h2>{topMovies[0].title}</h2>
+              <p>{topMovies[0].overview}</p>
+            </div>
+          </Link>
+        </div>
       )}
-      <div className={styles.topFilmOverlay}></div>
-      <div className={styles.topFilmDetails}>
-        <h2>{topMovies[0].title}</h2>
-        <p>{topMovies[0].overview}</p>
-      </div>
-    </Link>
-  </div>
-)}
 
+      <TopTenCarousel language={language} />
 
-<TopTenCarousel />
-  
       {/* Остальные фильмы (без номеров) */}
       <div className={styles.movieList}>
         {displayedMovies.map((movie, index) => {
@@ -209,10 +217,10 @@ const [showBanner, setShowBanner] = useState(false);
           );
         })}
       </div>
-  
+
       {loading && <p className={styles.loading}>Loading...</p>}
     </div>
   );
-  
-}
+};
+
 export default MovieList;
