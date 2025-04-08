@@ -7,9 +7,11 @@ import MovieList from '../components/MovieList';
 interface HomeProps {
   language: string;
   searchResults: any[]; // <-- Указываем тип
+  category: string;
+  selectedGenre: string | null;
 }
 
-const Home: React.FC<HomeProps> = ({ language, searchResults }: { language: string; searchResults: any[] }) => {
+const Home: React.FC<HomeProps> = ({ language, searchResults, category, selectedGenre }: { language: string; searchResults: any[], category: string, selectedGenre: string | null }) => {
   const location = useLocation();
   const isMovieDetailPage = location.pathname.startsWith("/movie/");
   const [showWelcome, setShowWelcome] = useState(() => {
@@ -28,7 +30,7 @@ const Home: React.FC<HomeProps> = ({ language, searchResults }: { language: stri
 
   return (
     <div className={styles.homeWrapper}>
-      {!isMovieDetailPage && <MovieList language={language} searchResults={searchResults} />}
+      {!isMovieDetailPage && <MovieList language={language} searchResults={searchResults} category={category} selectedGenre={selectedGenre} />}
       {showWelcome ? (
         <motion.div 
           className={styles.welcomeScreen}

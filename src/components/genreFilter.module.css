@@ -1,26 +1,30 @@
+@media (prefers-color-scheme: dark) {
+    :root {
+      --button-bg: #141414;
+      --button-text: #ffffff;
+    }
+  }
+
+  @media (prefers-color-scheme: light) {
+    :root {
+      --button-bg: #141414;
+      --button-text: #ffffff;
+    }
+  }
+
 .genreButton{
-    /* height: 40px;
-    border: none;
-    border-radius: 10px;
-    align-items: center;
     display: flex;
     justify-content: center;
-    justify-items: center;
-    font-size: 1rem; */
-    color-scheme: light dark;
-    color: rgba(255, 255, 255, 0.87);
-    width: 150px;
+    align-items: center;
+    background-color: var(--button-bg);
+    color: var(--button-text);
+    width: 140px;
     border-radius: 8px;
-    border: 1px solid transparent;
+    /* border: 1px solid transparent; */
     padding: 0.6em 1.2em;
     font-size: 1em;
     font-weight: 500;
     font-family: inherit;
-    background-color: #00000064;
     cursor: pointer;
-    transition: border-color 0.25s;
+    /* transition: border-color 0.25s; */
 }
-
-.genreButton:hover{
-    border: 2px solid #e50914;
-  }

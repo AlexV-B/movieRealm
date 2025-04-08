@@ -2,7 +2,7 @@
   position: relative;
   margin: auto;
   padding: 20px;
-  background-color: black;
+  background: linear-gradient(to top, #72070c, rgba(0, 0, 0, 0.912));
   color: white;
   overflow: hidden;
   -webkit-overflow-scrolling: touch;
@@ -38,7 +38,7 @@
   left: 25px;
   font-size: 6rem;
   font-weight: bold;
-  color: rgba(0, 0, 0, 0.605);
+  color: rgba(0, 0, 0, 0.455);
   -webkit-text-stroke: 1px rgb(255, 255, 255); /* Черная окантовка вокруг текста */
   border-radius: 5px;
   z-index: 2;

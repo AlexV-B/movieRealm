@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import styles from "./movieDetail.module.css";
 import CustomSwiper from "./CustomSwiper";
 
@@ -170,17 +170,18 @@ const MovieDetail = ({ language }: { language: string }) => {
         <h3 className={styles.cast}>Cast</h3>
         <div className={styles.actorsList}>
           {actors.slice(0, 8).map(
-            (
-              actor // Ограничиваем количество актеров
-            ) => (
-              <div key={actor.id} className={styles.actorCards}>
+            (actor) => (
+              <Link
+              key={actor.id} 
+              to={`/actor/${actor.id}`}
+              className={styles.actorCards}>
                 <img
                   src={`https://image.tmdb.org/t/p/w500${actor.profile_path}`}
                   alt={actor.name}
                   className={styles.actorImage}
                 />
                 <p>{actor.name}</p>
-              </div>
+              </Link>
             )
           )}
         </div>

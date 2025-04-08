@@ -1,3 +1,10 @@
+@media (prefers-color-scheme: dark) {
+  :root {
+    --button-bg: #222222;
+    --button-text: #ffffff;
+  }
+}
+
 .header {
   position: fixed;
   width: 100vw;
@@ -21,11 +28,39 @@
 
 .leftBlock {
   display: flex;
-  margin-left: 50vw;
+  margin-left:10vw;
+}
+
+.languageBox{
+  display: flex;
+  align-items: center;
 }
 
 .language {
   width: 7vw;
-  height: 5vh;
+  height: 6vh;
   margin-right: 20px;
+  border-radius: 8px;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: var(--button-bg);
+  color: var(--button-text);
 }
+
+.tabs{
+  /* width: 100vw; */
+  height: 50px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin: 0 15px;
+  
+}
+
+.tabs button{
+  background-color: var(--button-bg);
+  color: var(--button-text);
+  width: 100px;
+}
+

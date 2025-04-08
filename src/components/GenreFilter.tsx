@@ -11,16 +11,17 @@ interface Genre {
 
 interface GenreFilterProps {
     onSelectGenre: (genreId: string) => void;
+    selectedGenre: string | null;
 }
 
-const GenreFilter: React.FC<GenreFilterProps> = ({ onSelectGenre }) => {
+const GenreFilter: React.FC<GenreFilterProps> = ({ onSelectGenre, selectedGenre }) => {
     const [genres, setGenres] = useState<Genre[]>([]);
 
     useEffect(() => {
         const fetchGenres = async () => {
             try {
                 const response = await axios.get(
-                    `https://api.themoviedb.org/3/genre/movie/list?api_key=${apiKey}&language=eng`
+                    `https://api.themoviedb.org/3/genre/movie/list?api_key=${apiKey}&language=en`
                 );
                 setGenres(response.data.genres);
             } catch (error) {
@@ -32,7 +33,9 @@ const GenreFilter: React.FC<GenreFilterProps> = ({ onSelectGenre }) => {
     }, []);
 
     return (
-        <select onChange={(e) => onSelectGenre(e.target.value)} className={styles.genreButton}>
+        <select 
+        value={selectedGenre ?? ""}
+        onChange={(e) => onSelectGenre(e.target.value)} className={styles.genreButton}>
             <option className={styles.allGenres} value="">All genres</option>
             {genres.map((genre) => (
                 <option key={genre.id} value={genre.id}>

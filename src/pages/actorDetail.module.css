@@ -1,0 +1,89 @@
+.actorContainer {
+    width: 100vw;
+    height: 200vh;
+    /* padding: 2rem; */
+    color: white;
+    background-color: #121212;
+}
+
+.actorHeader {
+    width: 100vw;
+    display: flex;
+    gap: 6rem;
+}
+
+.actorPhoto {
+    margin-top: 20vh;
+    width: 21%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 30px;
+    margin-left: 55px;
+    box-sizing: border-box;
+  }
+  
+  .actorInfo {
+    margin-top: 20vh;
+    width: 100vw;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+  }
+  
+  .actorBio {
+    margin-top: 1rem;
+    line-height: 1.5;
+    width: 60vw;
+    font-size: 1rem;
+}
+  
+
+.socialLinks {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  
+  .socialLinks a {
+    color: #1da1f2;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  
+  .actorMovies {
+    width: 100vw;
+    margin-top: 3rem;
+  }
+  .actorMovies h2{
+    margin-left: 55px;
+
+  }
+  
+  .moviesGrid {
+    width: 100vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.3rem;
+    flex-wrap: wrap;
+  }
+  
+  .movieCard {
+    width: 150px;
+    text-align: center;
+    color: white;
+    text-decoration: none;
+  }
+  
+  .moviePoster {
+    width: 100%;
+    border-radius: 8px;
+    transition: transform 0.3s ease;
+  }
+  
+  .moviePoster:hover {
+    transform: scale(1.05);
+  }

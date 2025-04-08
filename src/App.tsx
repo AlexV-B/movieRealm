@@ -2,14 +2,15 @@ import { Route, Routes } from "react-router-dom";
 import MovieDetail from "./pages/MovieDetail";
 import Home from "./pages/Home";
 import Header from "./components/Header";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import ActorDetail from "./pages/ActorDetail";
 
 const App = () => {
   const [searchResults, setSearchResults] = useState<any[]>([]);
-
-  // Получаем и устанавливаем начальный язык
-  const savedLanguage = localStorage.getItem('language') || "en-US";
+  const savedLanguage = localStorage.getItem('language') || "en-US";  // Получаем и устанавливаем начальный язык
   const [language, setLanguage] = useState(savedLanguage);
+  const [category, setCategory] = useState("trending");
+  const [selectedGenre, setSelectedGenre] = useState<string | null>(null);
 
   // При изменении языка сохраняем его в localStorage
   useEffect(() => {
@@ -26,13 +27,28 @@ const App = () => {
     console.log("Search query:", query);
   };
 
+  const handleCategoryChange = useCallback((newCategory: string) => {
+    setCategory(newCategory);
+  }, []);
+
+  const handleGenreChange = useCallback((newGenre: string | null) => {
+    setSelectedGenre(newGenre);
+  }, []);
+
   return (
     <>
-      <Header language={language} onSearchResults={handleSearchResults} setLanguage={setLanguage} />
+      <Header 
+      language={language} 
+      onSearchResults={handleSearchResults} 
+      setLanguage={setLanguage} 
+      onCategoryChange={handleCategoryChange}
+      onGenreChange={handleGenreChange}
+      />
       <Routes>
-        <Route path="/" element={<Home language={language} searchResults={searchResults} />} />
-        <Route path="/movie/:id" element={<MovieDetail language={language} />} /> {/* Результаты поиска в MovieDetail не передаем, так как они не требуются */}
-      </Routes>
+        <Route path="/" element={<Home language={language} searchResults={searchResults} category={category} selectedGenre={selectedGenre}/>} />
+        <Route path="/movie/:id" element={<MovieDetail language={language} />} /> 
+        <Route path="/actor/:id" element={<ActorDetail language={language} />} />
+        </Routes>
     </>
   );
 };

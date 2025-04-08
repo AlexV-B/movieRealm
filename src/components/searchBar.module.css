@@ -1,22 +1,28 @@
 .searchBar {
     display: flex;
     justify-content: center;
+    align-items: center;
   }
   
   .searchBar input {
     padding: 8px;
     width: 15vw;
-    height: 2vh;
+    height: 3vh;
+    border-radius: 8px;
+    border: 1px solid transparent;
     margin-right: 10px;
+    font-size: 1em;
+    font-weight: 500;
+    font-family: inherit;
   }
   
   .searchBar button {
     padding: 8px 12px;
     cursor: pointer;
-    height: 5vh;
+    height: 6vh;
     background: red;
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 8px;
   }
   

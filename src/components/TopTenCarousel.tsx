@@ -8,6 +8,11 @@ import styles from "./TopTenCarousel.module.css";
 
 const apiKey = "6079e93c1e108a319ce62e3f8c0a8ac0";
 
+interface TopTenCarouselProps {
+  language: string;
+  onTrailerChange: (trailer: string | null, overview: string, title: string) => void; // Обновляем тип
+}
+
 // Кастомные стрелки
 const CustomPrevArrow = (props: any) => {
   const { className, onClick } = props;
@@ -19,8 +24,10 @@ const CustomNextArrow = (props: any) => {
   return <div className={`${className} ${styles.customArrow} ${styles.next}`} onClick={onClick} />;
 };
 
-const TopTenCarousel = ({ language }: { language: string }) => {
+
+const TopTenCarousel: React.FC<TopTenCarouselProps> = ({ language, onTrailerChange }) => {
   const [topMovies, setTopMovies] = useState<any[]>([]);
+  const [_trailerKey, setTrailerKey] = useState<string | null>(null);
   const sliderRef = useRef<Slider | null>(null);
   const isDragging = useRef(false);
 
@@ -31,17 +38,53 @@ const TopTenCarousel = ({ language }: { language: string }) => {
           `https://api.themoviedb.org/3/trending/movie/day?api_key=${apiKey}&language=${language}&nocache=${Math.random()}`
         );
         const movies = response.data.results.slice(0, 10);
+        setTopMovies(movies);
 
-        setTopMovies(movies); // Обновляем список фильмов
-
-        console.log("Загруженные фильмы:", response.data.results); // Проверяем, меняется ли язык
       } catch (error) {
         console.error("Ошибка загрузки ТОП-10 фильмов:", error);
       }
     };
 
     fetchTopMovies();
-  }, [language]); // Срабатывает при изменении языка
+  }, [language]);
+
+  useEffect(() => {
+    if (topMovies.length > 0) {
+      console.log("Трейлер загружается для:", topMovies[0]); // Проверка первого фильма
+      fetchTrailer(topMovies[0].id);
+    }
+  }, [topMovies, language]);
+
+  // В родительском компоненте добавьте типизацию для onTrailerChange
+const fetchTrailer = async (movieId: number) => {
+  try {
+    const response = await axios.get(
+      `https://api.themoviedb.org/3/movie/${movieId}/videos?api_key=${apiKey}&language=${language}`
+    );
+    const trailers = response.data.results.filter((video: any) => video.type === "Trailer");
+    if (trailers.length > 0) {
+      const trailerKey = trailers[0].key;
+      setTrailerKey(trailerKey);
+      console.log("Передаваемый трейлер:", trailerKey);
+      
+      // Получаем дополнительные данные о фильме
+      const movieResponse = await axios.get(
+        `https://api.themoviedb.org/3/movie/${movieId}?api_key=${apiKey}&language=${language}`
+      );
+      const movie = movieResponse.data;
+
+      // Передаем два аргумента: трейлер и описание
+      onTrailerChange(trailerKey, movie.overview,  movie.title); 
+    } else {
+      setTrailerKey(null);
+      onTrailerChange(null, "", "");
+    }
+  } catch (error) {
+    console.error("Ошибка загрузки трейлера:", error);
+    setTrailerKey(null);
+    onTrailerChange(null, "", "");
+  }
+};
 
   const settings = {
     dots: false,
@@ -88,16 +131,20 @@ const TopTenCarousel = ({ language }: { language: string }) => {
     const handleWheel = (event: WheelEvent) => {
       if (!sliderRef.current) return;
   
+       // Блокируем жесты "назад/вперёд" при горизонтальном скролле
+    if (Math.abs(event.deltaX) > Math.abs(event.deltaY)) {
+      event.preventDefault(); // Останавливаем стандартное поведение
       if (event.deltaX > 0) {
         sliderRef.current.slickNext(); // Прокрутка вправо
       } else if (event.deltaX < 0) {
         sliderRef.current.slickPrev(); // Прокрутка влево
       }
+    }
     };
   
     const sliderElement = sliderRef.current?.innerSlider?.list;
     if (sliderElement) {
-      sliderElement.addEventListener("wheel", handleWheel);
+      sliderElement.addEventListener("wheel", handleWheel, { passive: false });
     }
   
     return () => {
@@ -107,14 +154,11 @@ const TopTenCarousel = ({ language }: { language: string }) => {
     };
   }, []);
   
-  
+
   return (
-    <div
-      key={language} // Уникальный ключ для принудительного обновления карусели
-      className={styles.carouselContainer}
-    >
+    <div key={language} className={styles.carouselContainer}>
       <h2>Top 10 this week</h2>
-      <Slider key={language} ref={sliderRef} {...settings}>
+      <Slider ref={sliderRef} {...settings}>
         {topMovies.map((movie, index) => (
           <div key={movie.id} className={styles.movieCard}>
             <span className={styles.rank}>{index + 1}</span>
@@ -127,7 +171,7 @@ const TopTenCarousel = ({ language }: { language: string }) => {
               }}
             >
               <img
-                src={`https://image.tmdb.org/t/p/w780${movie.poster_path}`}  // Убедись, что ты правильно подставляешь язык
+                src={`https://image.tmdb.org/t/p/w780${movie.poster_path}`}
                 alt={movie.title}
                 className={styles.poster}
               />
