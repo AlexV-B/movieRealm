@@ -25,49 +25,61 @@ const MovieList = ({
   category: string;
   selectedGenre: string | null;
 }) => {
-  const [movies, setMovies] = useState<any[]>([]); // Остальные фильмы
+  const [movies, setMovies] = useState<any[]>([]);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState<boolean>(false);
   const { ref, inView } = useInView({ threshold: 0.2 });
-  const displayedMovies = searchResults.length > 0 ? searchResults : movies;
   const [trailerKey, setTrailerKey] = useState<string | null>(null);
   const [_showBanner, setShowBanner] = useState(true);
   const location = useLocation();
-  const hasFetched = useRef(false); // 🔹 Запоминает, вызывался ли уже fetchMovies
+  const hasFetched = useRef(false);
   const [currentMovieId, setCurrentMovieId] = useState<string | null>(null);
   const listRef = useRef<HTMLDivElement>(null);
+  const [mainMovie, setMainMovie] = useState<any | null>(null);
 
   const scrollToList = () => {
-    listRef.current?.scrollIntoView({ behavior: "smooth" });
+    listRef.current?.scrollIntoView({ behavior: "smooth", block: "start", });
   };
 
+  const displayedMovies =
+    searchResults.length > 0 && !category && !selectedGenre
+      ? searchResults
+      : movies;
 
-  useEffect(() => {
+
+      useEffect(() => {
+  if (searchResults.length === 0) {
     setTimeout(() => {
       window.scrollTo(0, 0);
-    }, 100); // Задержка на 100 мс для корректного отображения
-  }, [location.pathname]); // Выполняется при изменении пути
+    }, 100);
+  }
+}, [location.pathname]);
+
+
+useEffect(() => {
+  if (searchResults.length > 0) {
+    scrollToList();
+  }
+}, [searchResults]);
 
   useEffect(() => {
-    setLoading(true); 
+    setLoading(true);
     setMovies([]);
     setPage(1);
-    setTrailerKey(null); // 🔹 Сбрасываем трейлер перед загрузкой новых данных
+    setTrailerKey(null);
     setShowBanner(true);
-    hasFetched.current = false; // Позволяет повторно загрузить данные при смене фильтров
-    scrollToList(); // 🔽 Прокрутка
+    hasFetched.current = false;
+    scrollToList();
+
     setTimeout(() => {
-      fetchMovies(1); // 🔹 Даем время на очистку, затем загружаем новые фильмы
-  }, 50);
+      fetchMovies(1);
+    }, 50);
   }, [category, selectedGenre, language]);
-
-
 
   useEffect(() => {
     hasFetched.current = false;
-      fetchMovies(1);
+    fetchMovies(1);
   }, [category, selectedGenre, language]);
-
 
   useEffect(() => {
     if (inView && !loading && movies.length > 0 && page < 500) {
@@ -81,37 +93,26 @@ const MovieList = ({
     }
   }, [page]);
 
-
-  const fetchMovies = async (
-    page: number,
-  ) => {
-    console.log("Текущий topMovies[0] перед рендерингом:", movies[0]);
+  const fetchMovies = async (page: number) => {
     setLoading(true);
-    
-    
+
     let url = "";
-    
+
     if (selectedGenre) {
-      // Используем discover для фильтрации по жанрам
       url = `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&language=${language}&page=${page}&with_genres=${selectedGenre}`;
     } else {
       const categoryData = categories.find(
         (c) => c.id.toLowerCase() === category.toLowerCase()
       );
-      console.log("Текущая категория:", category); // ✅ Логируем категорию
-      console.log("Найденный объект в categories:", categoryData); // ✅ Логируем найденные данные
-    
-    if (!categoryData) {
-      console.error("Ошибка: не найдена категория", category);
-      setLoading(false);
-      return;
+
+      if (!categoryData) {
+        console.error("Ошибка: не найдена категория", category);
+        setLoading(false);
+        return;
+      }
+
+      url = `https://api.themoviedb.org/3/${categoryData.url}?api_key=${apiKey}&language=${language}&page=${page}`;
     }
-    
-    url = `https://api.themoviedb.org/3/${categoryData.url}?api_key=${apiKey}&language=${language}&page=${page}`;
-  }
-
-    console.log("Формируемый URL запроса:", url); // ✅ Логируем URL перед запросом
-
 
     try {
       const response = await axios.get(url);
@@ -119,42 +120,29 @@ const MovieList = ({
 
       if (page === 1) {
         setMovies(newMovies.slice(0, 10));
-      
+
         if (newMovies.length > 0) {
           const firstMovie = newMovies[0];
-          
-           // 🔹 Добавляем задержку, чтобы дождаться обновления состояния
-           setTimeout(async () => {
+          setMainMovie(firstMovie);
+          setTimeout(async () => {
             const trailer = await fetchTrailer(firstMovie.id);
             setTrailerKey(trailer);
-        }, 100);
-      }
+          }, 100);
+        }
       } else {
         setMovies((prevMovies) => [
-            ...prevMovies,
-            ...newMovies.filter(
-              (newMovie: { id: any }) =>
-                !prevMovies.some((prevMovie) => prevMovie.id === newMovie.id)
-            ),
-          ]
-        );
+          ...prevMovies,
+          ...newMovies.filter(
+            (newMovie: { id: any }) =>
+              !prevMovies.some((prevMovie) => prevMovie.id === newMovie.id)
+          ),
+        ]);
       }
     } catch (error) {
       console.error("Ошибка загрузки фильмов:", error);
     } finally {
       setLoading(false);
     }
-  };
-useEffect(() => {
-    console.log("Изменена категория на:", category);
-}, [category]);
-
-  const onTrailerChange = (trailer: string | null, overview: string, title: string) => {
-    console.log("Трейлер изменен:", trailer);
-    console.log("Описание фильма:", overview);
-    console.log("Название фильма:", title);
-
-    setTrailerKey(trailer);
   };
 
   const fetchTrailer = async (movieId: string) => {
@@ -163,7 +151,6 @@ useEffect(() => {
       const response = await axios.get(
         `https://api.themoviedb.org/3/movie/${movieId}/videos?api_key=${apiKey}&language=${language}`
       );
-      console.log("Полученные видео fetchTrailer:", response.data.results);
       const trailers = response.data.results.filter(
         (video: any) => video.type === "Trailer" && video.site === "YouTube"
       );
@@ -183,8 +170,8 @@ useEffect(() => {
       }
     } catch (error) {
       console.error("Ошибка загрузки трейлера:", error);
-        setTrailerKey(null);
-        setShowBanner(true);
+      setTrailerKey(null);
+      setShowBanner(true);
     }
   };
 
@@ -204,49 +191,56 @@ useEffect(() => {
     };
   }, []);
 
-
+  const renderSkeletons = () => {
+    return Array.from({ length: 10 }).map((_, idx) => (
+      <div key={idx} className={styles.movieCardSkeleton}></div>
+    ));
+  };
 
   return (
     <div className={styles.containerMovieList}>
-      {movies.length > 0 && movies[0] && (
+{mainMovie && (
         <div className={styles.topFilmBlockTrailer}>
-          <Link to={`/movie/${movies[0]?.id}`}>
+          <Link to={`/movie/${mainMovie.id}`}>
             {trailerKey ? (
               <iframe
+              key={trailerKey}
                 className={styles.topFilmTrailer}
-                src={`https://www.youtube.com/embed/${trailerKey}?autoplay=1&mute=1&loop=1&playlist=${trailerKey}`}
+                src={`https://www.youtube.com/embed/${trailerKey}?autoplay=1&mute=1`}
                 title="Movie Trailer"
                 frameBorder="0"
-                allow="autoplay; encrypted-media"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
               ></iframe>
             ) : (
               <img
                 className={styles.topFilmBanner}
-                src={`https://image.tmdb.org/t/p/w1920${movies[0].backdrop_path || movies[0].poster_path}`}
-                alt={movies[0].title}
+                src={`https://image.tmdb.org/t/p/w1920${mainMovie.backdrop_path || mainMovie.poster_path}`}
+                alt={mainMovie.title}
               />
             )}
             <div className={styles.topFilmOverlay}></div>
             <div className={styles.topFilmDetails}>
-            <h2>{movies[0]?.title}</h2>
-            <p>{movies[0]?.overview}</p>
+              <h2>{mainMovie.title}</h2>
+              <p>{mainMovie.overview}</p>
             </div>
           </Link>
         </div>
       )}
 
-      <TopTenCarousel language={language} onTrailerChange={onTrailerChange} />
+      <TopTenCarousel language={language} onTrailerChange={setTrailerKey} />
 
-      {/* Остальные фильмы (без номеров) */}
       <div ref={listRef} className={styles.movieList}>
+        {displayedMovies.length === 0 && !loading && (
+          <p className={styles.noResults}>Not found</p>
+        )}
         {displayedMovies.map((movie, index) => {
           const isLastItem = index === displayedMovies.length - 1;
           return (
             <div
               key={movie.id}
               className={styles.movieCard}
-              ref={isLastItem ? ref : null} // ref только у последнего элемента
+              ref={isLastItem ? ref : null}
             >
               <Link to={`/movie/${movie.id}`}>
                 <img
@@ -257,12 +251,11 @@ useEffect(() => {
             </div>
           );
         })}
-      </div>
 
-      {loading && <p className={styles.loading}>Loading...</p>}
+        {loading && renderSkeletons()}
+      </div>
     </div>
   );
 };
 
 export default MovieList;
-

@@ -21,9 +21,3 @@
     z-index: 9999;
   }
   
-  .content {
-    padding-top: 80px; /* Учитываем высоту Header */
-    min-height: 100vh;
-    overflow-y: auto;
-  }
-  

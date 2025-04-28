@@ -28,7 +28,23 @@
 
 .leftBlock {
   display: flex;
+  align-items: center;
+  justify-content: center;
   margin-left:10vw;
+}
+.MoviesTV{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 7vw;
+  height: 6vh;
+  margin-right: 20px;
+  border-radius: 8px;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: var(--button-bg);
+  color: var(--button-text);
 }
 
 .languageBox{

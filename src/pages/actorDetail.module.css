@@ -1,6 +1,6 @@
 .actorContainer {
     width: 100vw;
-    height: 200vh;
+    height: 100%;
     /* padding: 2rem; */
     color: white;
     background-color: #121212;
@@ -48,7 +48,7 @@
   }
   
   .socialLinks a {
-    color: #1da1f2;
+    color: #e50914;
     text-decoration: none;
     font-weight: bold;
   }
@@ -77,6 +77,10 @@
     color: white;
     text-decoration: none;
   }
+
+    .movieCard:hover {
+    color: #e50914;
+    }
   
   .moviePoster {
     width: 100%;
@@ -86,4 +90,5 @@
   
   .moviePoster:hover {
     transform: scale(1.05);
-  }
+}
+

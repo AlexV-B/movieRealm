@@ -19,17 +19,31 @@ const Header = ({
 }) => {
   const [selectedGenre, setSelectedGenre] = useState<string | null>(null);
   const [category, setCategory] = useState<string>("Trending");
-
+  const [contentType, setContentType] = useState<string>("movie");
 
   const handleCategoryClick = (newCategory: string) => {
     setCategory(newCategory);
     setSelectedGenre(null); // ⬅️ сброс жанра при выборе категории
+    onSearchResults([], "");
   };
 
   const handleGenreClick = (genreId: string) => {
     setSelectedGenre(genreId);
     setCategory(""); // ⬅️ опционально
+    onSearchResults([], "");
   };
+
+  const handleSearchClick = (results: any[] | null, query: string) => {
+    if (query.trim()) {
+      onSearchResults(results, query);
+      setCategory(""); // Сброс категории при поиске
+      setSelectedGenre(null); // Сброс жанра при поиске
+    } else {
+      onSearchResults([], ""); // Если пустой запрос, сбросить результаты поиска"");
+      setCategory("Trending"); // Возврат к категории "Trending"
+      setSelectedGenre(null); // Сброс жанра при сбросе поиска
+    }
+  }
 
   useEffect(() => {
     onCategoryChange(category);
@@ -50,6 +64,14 @@ const Header = ({
         <h1>MovieRealm</h1>
       </Link>
       <div className={styles.leftBlock}>
+      <select
+  value={contentType}
+  onChange={(e) => setContentType(e.target.value)}
+  className={styles.MoviesTV}
+>
+  <option value="movie">Movies</option>
+  <option value="tv">TV Shows</option>
+</select>
       <div className={styles.tabs}>
         <GenreFilter onSelectGenre={handleGenreClick} selectedGenre={selectedGenre}/>
         {["Trending", "Now_playing", "Upcoming"].map((cat) => (
@@ -73,7 +95,7 @@ const Header = ({
             <option value="ru-RU">Русский</option>
           </select>
         </div>
-        <SearchBar onSearchResults={onSearchResults} />
+        <SearchBar onSearchResults={handleSearchClick} language={language} />
       </div>
     </header>
   );
